@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- <link rel="stylesheet" type="text/css" media="screen" href="main.css" /> -->
+    <!-- <script src="main.js"></script> -->
+  </head>
+  <style>
+    .product-name-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      margin: 1rem;
+      background-color: tomato;
+      color: white;
+    }
+  </style>
+  <body>
+    <div id="main">
+      <div id="products"></div>
+    </div>
+  </body>
+  <script>
+    const main = document.querySelector("#main");
+    const productsDiv = document.querySelector("#products");
+    //products, offerings, and companies.
+    const grabCompanies = () =>
+      fetch("https://acme-users-api-rev.herokuapp.com/api/companies")
+        .then(response => response.json())
+        .then(data => console.log("company-data:", data));
+    //.catch(e => console.log(e));
+    const grabOfferings = () =>
+      fetch("https://acme-users-api-rev.herokuapp.com/api/offerings")
+        .then(response => response.json())
+        .then(data => console.log("offerings-data:", data));
+    //.catch(e => console.log(e));
+    const grabProducts = () =>
+      fetch("https://acme-users-api-rev.herokuapp.com/api/products")
+        .then(response => response.json())
+        .then(data => {
+          console.log("products-data:", data);
+          return data;
+        })
+        .catch(e => console.log(e));
+
+    grabProducts().then(products => {
+      const productItems = createProductDiv(products);
+      //   const productHTML = productDivString.join("");
+      //   productsDiv.innerHTML = productHTML;
+      productItems.forEach(item => productsDiv.append(item));
+    });
+
+    const createProductDiv = productData => {
+      return productData.map(eachProdObj => {
+        // return `<div class="product-name-container" id=${eachProdObj.name}>
+        //             <h1>${eachProdObj.name}</h1>
+        //             <div>
+        //          ${eachProdObj.description}
+        //             </div>
+        //              <div>
+        //          ${eachProdObj.suggestedPrice}
+        //              </div>
+        //         </div>`;
+        const prodItem = document.createElement("div");
+        prodItem.classList.add("product-name-container");
+
+        const nameDiv = document.createElement("div");
+        nameDiv.innerText = eachProdObj.name;
+        prodItem.append(nameDiv);
+        const descriptionDiv = document.createElement("div");
+        descriptionDiv.innerText = eachProdObj.description;
+        prodItem.append(descriptionDiv);
+        const suggestedPriceDiv = document.createElement("div");
+        suggestedPriceDiv.innerText = eachProdObj.suggestedPrice;
+        prodItem.append(suggestedPriceDiv);
+        return prodItem;
+      });
+    };
+  </script>
+</html>
